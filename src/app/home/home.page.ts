@@ -1,27 +1,33 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { Paho } from '../../assets/js/paho-mqtt.js';
+import  Paho  from '../../assets/js/paho-mqtt.js';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
+
 export class HomePage {
   private mqttStatus = 'Disconnected';
   private mqttClient: any = null;
   private message: any = '';
   private messageToSend = 'Type your message here.';
   private topic = 'swen325/a3';
-  private clientId = '342323cwwerwe'; // this string must be unique to every client
+  // private clientId = '342323cwwerwe'; // this string must be unique to every client
+  private clientId = 'clientId-OglkG9IvNR';
 
   constructor(public navCtrl: NavController) {}
 
-  public connect() {
+
+    // 'barretts.ecs.vuw.ac.nz',
+      // 8883,
+  connect() {
     this.mqttStatus = 'Connecting...';
-    this.mqttClient = new Paho.MQTT.Client(
-      'barretts.ecs.vuw.ac.nz',
-      8883,
+    this.mqttClient = new Paho.Client(
+      'broker.mqttdashboard.com',
+      8000,
       '/mqtt',
       this.clientId
     );
@@ -40,23 +46,24 @@ export class HomePage {
     });
   }
 
-  public disconnect() {
-    if (this.mqttStatus == 'Connected') {
+  disconnect() {
+    if (this.mqttStatus === 'Connected') {
       this.mqttStatus = 'Disconnecting...';
       this.mqttClient.disconnect();
       this.mqttStatus = 'Disconnected';
+      console.log('disconnect done!')
     }
   }
 
-  public sendMessage() {
+  sendMessage() {
     // tslint:disable-next-line: indent
-    if (this.mqttStatus == 'Connected') {
+    if (this.mqttStatus === 'Connected') {
       // tslint:disable-next-line: indent
       this.mqttClient.publish(this.topic, this.messageToSend);
     }
   }
 
-  public onConnect = () => {
+  onConnect = () => {
     console.log('Connected');
     this.mqttStatus = 'Connected';
 
@@ -64,18 +71,18 @@ export class HomePage {
     this.mqttClient.subscribe(this.topic);
   };
 
-  public onFailure = responseObject => {
+  onFailure = responseObject => {
     console.log('Failed to connect');
     this.mqttStatus = 'Failed to connect';
   };
 
-  public onConnectionLost = responseObject => {
+  onConnectionLost = responseObject => {
     if (responseObject.errorCode !== 0) {
       this.mqttStatus = 'Disconnected';
     }
   };
 
-  public onMessageArrived = message => {
+  onMessageArrived = message => {
     console.log('Received message');
     this.message = message.payloadString;
   };
