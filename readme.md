@@ -17,7 +17,7 @@ As long as the service is not created again, all the components can share the sa
 ```
 
 ## Ionic4 tutorial
-1.[Tabs](https://www.youtube.com/watch?v=_BnCRIZ1nDk)
+1.[Ionic Tabs](https://www.youtube.com/watch?v=_BnCRIZ1nDk)
 
 
 ## Angular8 tutorial
@@ -27,3 +27,6 @@ As long as the service is not created again, all the components can share the sa
 
 ## Git
 [Cache git password with timeout](https://help.github.com/en/articles/caching-your-github-password-in-git)
+
+
+## Others
