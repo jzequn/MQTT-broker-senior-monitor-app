@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>HiveMQ</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-content>Status: <b>{{this.mqttStatus}}</b></ion-card-content>
+  </ion-card>
+
+  <ion-row justify-content-center align-items-center>
+    <ion-button (click)="connect()">Connect</ion-button>
+    <ion-button (click)="disconnect()">Disconnect</ion-button>
+  </ion-row>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Message Received:</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      {{this.message}}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">Message to send:</ion-label>
+        <ion-textarea [(ngModel)]='messageToSend' placeholder="Enter you message here..."></ion-textarea>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-row justify-content-center align-items-center>
+    <ion-button (click)="sendMessage()">Send Message</ion-button>
+  </ion-row>
+
+
+
+</ion-content>
