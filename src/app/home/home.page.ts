@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+<<<<<<< HEAD
 import Paho from '../../assets/js/paho-mqtt.js';
+=======
+import  Paho  from '../../assets/js/paho-mqtt.js';
+>>>>>>> 0453ffb821eb37dfb20df4160a33bc54b1675735
 
 @Component({
   selector: 'app-home',
