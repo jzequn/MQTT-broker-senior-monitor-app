@@ -26,10 +26,10 @@ As long as the service is not created again, all the components can share the sa
 
 4.[Chart.js · Chart.js documentation](https://www.chartjs.org/docs/latest/)
 
-5.[Ionicons]
-(https://ionicframework.com/docs/v3/ionicons/)
+5.[Ionicons](https://ionicframework.com/docs/v3/ionicons/)
 
-6.
+6.[Theming in IONIC v4.x - Narendra Singh Rathore - Medium](https://medium.com/@nsrathore/theming-in-ionic-v4-x-603693693b91)
+
 ## Angular8 tutorial
 
 1.[Rxjs subject](https://blog.angulartraining.com/rxjs-subjects-a-tutorial-4dcce0e9637f) 2.[Angular - ViewChild](https://angular.io/api/core/ViewChild)
@@ -55,4 +55,19 @@ As long as the service is not created again, all the components can share the sa
 2.Then open http://www.hivemq.com/demos/websocket-client/ in the browser, set host to localhost.
 
 3.Connect to host, subscribe to swen325/a3 topic to get messages
+```
+
+## Parse Date in typescript
+
+[Date.parse() - JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse)
+
+```
+const time = "2019-10-13 18:00:10";
+const time2 = "2019-10-13 18:10:10";
+const parseTime = Date.parse(time);
+const date = new Date(parseTime);
+const date2 = new Date(Date.parse(time2));
+console.log(date);
+console.log(date2);
+console.log(date2-date);
 ```

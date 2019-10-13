@@ -6,14 +6,18 @@ import { Chart } from "chart.js";
   styleUrls: ["./battery-status.page.scss"]
 })
 export class BatteryStatusPage implements OnInit {
-  @ViewChild("barCanvas", {static: true}) barCanvas: ElementRef;
-  @ViewChild("doughnutCanvas", {static: true}) doughnutCanvas: ElementRef;
-  @ViewChild("lineCanvas", {static: true}) lineCanvas: ElementRef;
+  @ViewChild("barCanvas", { static: true }) barCanvas: ElementRef;
+  @ViewChild("doughnutCanvas", { static: true }) doughnutCanvas: ElementRef;
+  @ViewChild("lineCanvas", { static: true }) lineCanvas: ElementRef;
   constructor() {}
 
   private barChart: Chart;
   private doughnutChart: Chart;
   private lineChart: Chart;
+
+
+
+
   ngOnInit() {
     this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: "bar",
@@ -56,7 +60,6 @@ export class BatteryStatusPage implements OnInit {
       }
     });
 
-
     this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
       type: "doughnut",
       data: {
@@ -73,7 +76,14 @@ export class BatteryStatusPage implements OnInit {
               "rgba(153, 102, 255, 0.2)",
               "rgba(255, 159, 64, 0.2)"
             ],
-            hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#FF6384", "#36A2EB", "#FFCE56"]
+            hoverBackgroundColor: [
+              "#FF6384",
+              "#36A2EB",
+              "#FFCE56",
+              "#FF6384",
+              "#36A2EB",
+              "#FFCE56"
+            ]
           }
         ]
       }
@@ -82,7 +92,15 @@ export class BatteryStatusPage implements OnInit {
     this.lineChart = new Chart(this.lineCanvas.nativeElement, {
       type: "line",
       data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July"
+        ],
         datasets: [
           {
             label: "My First dataset",
