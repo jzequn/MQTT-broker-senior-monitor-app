@@ -24,7 +24,8 @@ export default class MqqtConnectionService {
     this.mqttStatus = 'Connecting...';
     this.mqttStatusSubject.next(this.mqttStatus);
     this.mqttClient = new Paho.Client(
-      'barretts.ecs.vuw.ac.nz',
+      // 'barretts.ecs.vuw.ac.nz',
+      'localhost',
       8883,
       '/mqtt',
       this.clientId
