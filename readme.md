@@ -70,4 +70,11 @@ const date2 = new Date(Date.parse(time2));
 console.log(date);
 console.log(date2);
 console.log(date2-date);
+
+result:
+> Sun Oct 13 2019 18:00:10 GMT+1300 (New Zealand Daylight Time)
+> Sun Oct 13 2019 18:10:10 GMT+1300 (New Zealand Daylight Time)
+> 600000
+
+600000 in milliseconds
 ```
