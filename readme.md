@@ -24,8 +24,12 @@ As long as the service is not created again, all the components can share the sa
 
 3.[Push - Ionic Documentation](https://ionicframework.com/docs/native/push)
 
-3. [Chart.js · Chart.js documentation](https://www.chartjs.org/docs/latest/)
+4.[Chart.js · Chart.js documentation](https://www.chartjs.org/docs/latest/)
 
+5.[Ionicons]
+(https://ionicframework.com/docs/v3/ionicons/)
+
+6.
 ## Angular8 tutorial
 
 1.[Rxjs subject](https://blog.angulartraining.com/rxjs-subjects-a-tutorial-4dcce0e9637f) 2.[Angular - ViewChild](https://angular.io/api/core/ViewChild)
@@ -42,4 +46,13 @@ As long as the service is not created again, all the components can share the sa
 
 3.[TypeScript - String split() - Tutorialspoint](https://www.tutorialspoint.com/typescript/typescript_string_split.htm)
 
-## connect to uni through
+## Use the host set up in uni through ssh connection
+
+```
+1.Run the command in terminal
+    ssh -L 8883:localhost:8883 username@barretts.ecs.vuw.ac.nz
+
+2.Then open http://www.hivemq.com/demos/websocket-client/ in the browser, set host to localhost.
+
+3.Connect to host, subscribe to swen325/a3 topic to get messages
+```

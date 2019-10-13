@@ -4,50 +4,61 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content padding>
-  <ion-card>
-    <ion-card-content>Status: <b>{{this.mqttStatus}}</b></ion-card-content>
-  </ion-card>
-
-  <ion-row justify-content-center align-items-center>
-    <ion-button (click)="connect()">Connect</ion-button>
-    <ion-button (click)="disconnect()">Disconnect</ion-button>
-  </ion-row>
-
-  <!-- send a message -->
-  <ion-card>
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="floating">Message to send:</ion-label>
-        <ion-textarea [(ngModel)]='messageToSend' placeholder="Enter you message here..."></ion-textarea>
-      </ion-item>
-      <ion-button (click)="sendMessage()">Send Message</ion-button>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- single message -->
-  <!-- <ion-card>
+  <div class="ion-padding">
+    <ion-card background="primary">
+      <img src="../../assets/img/kitchen.jfif" />
       <ion-card-header>
-        <ion-card-title>Message Received:</ion-card-title>
+        <ion-card-title color="success">Last Seen Place</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        {{this.message}}
+        <ion-item lines="none">
+          <!-- <ion-label color="tertiary" slot="start"></ion-label> -->
+          <!-- <ion-label color="tertiary">Kitchen</ion-label> -->
+          <!-- <ion-icon name="eye" slot="end"></ion-icon> -->
+          In the lovely Kitchen
+        </ion-item>
       </ion-card-content>
-    </ion-card> -->
+    </ion-card>
+    <ion-card background="primary">
+      <ion-card-header>
+        <!-- <ion-card-subtitle color="Medium">Time format: mm:ss</ion-card-subtitle> -->
+        <ion-card-title color="warning">Time since last motion</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none">
+          <!-- <ion-label color="tertiary" slot="start"></ion-label> -->
+          <!-- <ion-label color="tertiary">4:40</ion-label> -->
+          4min 50sec
+          <!-- <ion-icon name="ios-clock" slot="end"></ion-icon> -->
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+      <ion-card-header>
+        Bar Chart
+      </ion-card-header>
+      <ion-card-content>
+        <canvas #barCanvas></canvas>
+      </ion-card-content>
+    </ion-card>
 
+    <ion-card>
+      <ion-card-header>
+        Doughnut Chart
+      </ion-card-header>
+      <ion-card-content>
+        <canvas #doughnutCanvas></canvas>
+      </ion-card-content>
+    </ion-card>
 
-  <!-- multi messages -->
-  <ion-card *ngFor="let message of messageList.reverse()">
-    <ion-card-header>
-      <ion-card-title>Message Received:</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      {{message}}
-    </ion-card-content>
-  </ion-card>
-
-
-
-
+    <ion-card>
+      <ion-card-header>
+        Line Chart
+      </ion-card-header>
+      <ion-card-content>
+        <canvas #lineCanvas></canvas>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
