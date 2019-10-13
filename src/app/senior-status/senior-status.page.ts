@@ -26,7 +26,10 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   private messageList: any[] = [];
   private messageListSubscription: Subscription;
 
-
+  private lastDetectMotion: any;
+  private lastDetectMotionSubscription: Subscription;
+  private timeDifference: Date;
+  private timeDifferenceSubscription: Subscription;
   ngOnInit() {
     this.messageListSubscription = this.mqtt
       .getMessageList()
@@ -34,6 +37,22 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
         if (list != null) {
           this.messageList = list;
         }
+      });
+
+    this.lastDetectMotionSubscription = this.mqtt
+      .getLastDetectedMotion()
+      .subscribe(m => {
+        console.log("subscribe to last detected motion");
+        console.log("last detected motion", m);
+        this.lastDetectMotion = m;
+      });
+
+    this.timeDifferenceSubscription = this.mqtt
+      .getTimeDifference()
+      .subscribe(t => {
+        console.log("subscribe to timedifferece");
+        console.log("time Differece", t);
+        this.timeDifference = t;
       });
 
     // charts

@@ -46,6 +46,8 @@ As long as the service is not created again, all the components can share the sa
 
 3.[TypeScript - String split() - Tutorialspoint](https://www.tutorialspoint.com/typescript/typescript_string_split.htm)
 
+4.[javascript - Copy array items into another array - Stack Overflow](https://stackoverflow.com/questions/4156101/copy-array-items-into-another-array)
+
 ## Use the host set up in uni through ssh connection
 
 ```

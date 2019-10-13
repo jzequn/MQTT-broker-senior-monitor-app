@@ -17,6 +17,11 @@ export default class MqqtConnectionService {
   private topic = "swen325/a3";
   private clientId = "342323cwwerwe3"; // this string must be unique to every client
 
+  private lastDetectedMotion = new Map(); // motion is either 1 or 0
+  // private timeDifference = new Date();
+  private timeDifference: Date;
+  public lastDetectedMotionSubject = new Subject<any>();
+  public timeDifferenceSubject = new Subject<any>();
   constructor() {}
 
   private tokenList: any[] = [];
@@ -25,6 +30,82 @@ export default class MqqtConnectionService {
       const tokens = message.split(",", 5);
       this.tokenList.concat(tokens);
       console.log(tokens);
+    });
+  }
+
+  // this will calculate the time difference between current motion and lastDetectedMotion
+  calculateTimeDifference(
+    previousMotionTime: string,
+    currentMotionTime: string
+  ) {
+    const previous = new Date(Date.parse(previousMotionTime));
+    const current = new Date(Date.parse(currentMotionTime));
+    const difference = new Date(Number(+current - +previous)); // use this date to get the time difference with format hh:mm:ss
+    console.log("difference - calculate differece", difference);
+    this.timeDifference = difference;
+    this.timeDifferenceSubject.next(this.timeDifference);
+  }
+
+  // this will record motion corresponding time
+  detectMotion() {
+    this.messageList.map(message => {
+      const tokens = message.split(",", 5);
+      const motion = tokens[2];
+      const time = tokens[0];
+      // if current has no motion
+      if (motion === "0") {
+        // compare current motion time with time of lastDetectedMotion, which is either 1 or 0
+        // if lastDetectedMotion has no record
+        if (this.lastDetectedMotion.size === 0) {
+          this.lastDetectedMotion.set(motion, time);
+          this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
+        } else {
+          if (this.lastDetectedMotion.has("0")) {
+            // last detected motion is 0
+            // calculate time difference
+            this.calculateTimeDifference(
+              this.lastDetectedMotion.get("0"),
+              time
+            );
+          } else {
+            // last detected motion is 1
+            // calculate time difference
+            this.calculateTimeDifference(
+              this.lastDetectedMotion.get("1"),
+              time
+            );
+          }
+        }
+      } else {
+        // if current has motion
+        // last detected motion is empty
+        if (this.lastDetectedMotion.size === 0) {
+          // assign current motion to lastDetectedMotion
+          this.lastDetectedMotion.set(motion, time);
+          this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
+        } else {
+          if (this.lastDetectedMotion.has("0")) {
+            // last detected motion is 0
+            // calculate time difference, update the motion and time
+            this.calculateTimeDifference(
+              this.lastDetectedMotion.get("0"),
+              time
+            );
+            this.lastDetectedMotion.clear();
+            this.lastDetectedMotion.set(motion, time);
+            this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
+          } else {
+            // last detected motion is 1
+            // calculate time difference, update the motion and time
+            this.calculateTimeDifference(
+              this.lastDetectedMotion.get("1"),
+              time
+            );
+            this.lastDetectedMotion.set(motion, time);
+            this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
+          }
+        }
+      }
     });
   }
 
@@ -102,11 +183,11 @@ export default class MqqtConnectionService {
 
   onMessageArrived = message => {
     console.log("Received message");
-    // one message
+    // one message, store one message
     this.message = message.payloadString;
     this.messageSubject.next(this.message);
 
-    // message list
+    // message list, push all the message to message list
     // console.log('onMessageArrived-messageList');
 
     this.messageList.push(message.payloadString);
@@ -114,7 +195,8 @@ export default class MqqtConnectionService {
     // console.log('onMessageArrived-messagelist',this.messageList);
     // console.log('onMessageArrived-message.payloadString',message.payloadString);
     // console.log('messageList length',this.messageList.length)
-    this.parseMessageList();
+    // this.parseMessageList();
+    this.detectMotion();
   };
 
   // get one message
@@ -130,5 +212,12 @@ export default class MqqtConnectionService {
   // get message list
   getMessageList() {
     return this.messageListSubject.asObservable();
+  }
+
+  getLastDetectedMotion() {
+    return this.lastDetectedMotionSubject.asObservable();
+  }
+  getTimeDifference() {
+    return this.timeDifferenceSubject.asObservable();
   }
 }
