@@ -7,28 +7,29 @@
 <ion-content padding>
   <!-- cards -->
   <!-- <ion-card background="primary">
-      <img src="../../assets/img/kitchen.jfif" />
-      <ion-card-header>
-        <ion-card-title color="success">Last Seen Place</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item lines="none">
-          In the lovely Kitchen
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-    <ion-card background="primary">
-      <ion-card-header>
-        <ion-card-title color="warning">Time since last motion</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item lines="none">
-          4min 50sec
-        </ion-item>
-      </ion-card-content>
-    </ion-card> -->
+    <img src={{fetchImage()}} />
+    <ion-card-header>
+      <ion-card-title color="success">Last Seen Place</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        {{lastPlace()}}
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-card background="primary">
+    <ion-card-header>
+      <ion-card-title color="warning">Time since last motion</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        {{ lastMotion() }} min
+      </ion-item>
+    </ion-card-content>
+  </ion-card> -->
+
+
   <!-- charts -->
-  
   <!-- <ion-card *ngFor="let token of tokenList">
     <ion-item>
       token

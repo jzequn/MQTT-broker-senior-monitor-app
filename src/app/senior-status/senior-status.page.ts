@@ -26,10 +26,62 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   private messageList: any[] = [];
   private messageListSubscription: Subscription;
 
-  private lastDetectMotion: any;
+  private lastDetectMotion = new Map();
   private lastDetectMotionSubscription: Subscription;
-  private timeDifference: Date;
+  private initiatedDate = new Date();
+  private timeDifference = new Date();
   private timeDifferenceSubscription: Subscription;
+  private test = new Map();
+
+  fetchTimeDifference() {
+    // this.test.set("0", "10:13:13");
+    // return this.test.has('0') ? this.test.get('0'):'no 0 key found!';
+    const initialTime = +this.initiatedDate - +this.timeDifference;
+
+    return initialTime === 0 ? "no motion" : this.timeDifference.getMinutes();
+  }
+
+
+
+  fetchImage() {
+    let place = "";
+    if (this.lastDetectMotion.size !== 0) {
+      if (this.lastDetectMotion.has("0")) {
+        return `../../assets/img/house.jfif`;
+      } else {
+        place = this.lastDetectMotion.get("place");
+        return `../../assets/img/${place}.jfif`;
+      }
+    } else {
+      return `../../assets/img/house.jfif`;
+    }
+  }
+
+  fetchPlace() {
+    return "In the lovely " + this.lastDetectMotion.get("place");
+  }
+
+  lastMotion() {
+    if (this.lastDetectMotion.size !== 0) {
+      return this.lastDetectMotion.has("0")
+        ? "Em, there is no motion detected yet"
+        : // : this.lastDetectMotion.get("1");
+          this.fetchTimeDifference();
+    } else {
+      return "Wait ..., the app need some data from sensor, this could take some time.";
+    }
+  }
+
+  lastPlace() {
+    if (this.lastDetectMotion.size !== 0) {
+      return this.lastDetectMotion.has("0")
+        ? "Em, there is no motion detected yet"
+        : this.fetchPlace();
+    } else {
+      return "Wait ..., the app need some data from sensor, this could take some time.";
+    }
+  }
+
   ngOnInit() {
     this.messageListSubscription = this.mqtt
       .getMessageList()
@@ -38,20 +90,15 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
           this.messageList = list;
         }
       });
-
     this.lastDetectMotionSubscription = this.mqtt
       .getLastDetectedMotion()
       .subscribe(m => {
-        console.log("subscribe to last detected motion");
-        console.log("last detected motion", m);
         this.lastDetectMotion = m;
       });
 
     this.timeDifferenceSubscription = this.mqtt
       .getTimeDifference()
       .subscribe(t => {
-        console.log("subscribe to timedifferece");
-        console.log("time Differece", t);
         this.timeDifference = t;
       });
 
@@ -60,7 +107,6 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
       type: "bar",
       data: {
         labels: ["Living", "Kitchen", "Dining", "Toilet", "Bedroom"],
-        // , "Orange"
         datasets: [
           {
             label: "Frequency of occurence",
@@ -101,18 +147,18 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
     this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
       type: "doughnut",
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ["Living", "Kitchen", "Dining", "Toilet", "Bedroom"],
         datasets: [
           {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
+            label: "Frequency of occurence",
+            data: [12, 19, 3, 5, 2],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
               "rgba(255, 206, 86, 0.2)",
               "rgba(75, 192, 192, 0.2)",
               "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
+
             ],
             hoverBackgroundColor: [
               "#FF6384",
@@ -120,7 +166,6 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
               "#FFCE56",
               "#FF6384",
               "#36A2EB",
-              "#FFCE56"
             ]
           }
         ]
@@ -130,18 +175,10 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
     this.lineChart = new Chart(this.lineCanvas.nativeElement, {
       type: "line",
       data: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July"
-        ],
+        labels: ["Living", "Kitchen", "Dining", "Toilet", "Bedroom"],
         datasets: [
           {
-            label: "My First dataset",
+            label: "Frequency of occurence",
             fill: false,
             lineTension: 0.1,
             backgroundColor: "rgba(75,192,192,0.4)",
@@ -159,7 +196,7 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: [65, 59, 80, 81, 56, 55, 40],
+            data: [65, 59, 81, 56, 55],
             spanGaps: false
           }
         ]
@@ -168,5 +205,6 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.messageListSubscription.unsubscribe();
+    this.lastDetectMotionSubscription.unsubscribe();
   }
 }

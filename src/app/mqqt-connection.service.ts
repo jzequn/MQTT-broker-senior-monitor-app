@@ -52,6 +52,7 @@ export default class MqqtConnectionService {
       const tokens = message.split(",", 5);
       const motion = tokens[2];
       const time = tokens[0];
+      const place = tokens[1];
       // if current has no motion
       if (motion === "0") {
         // compare current motion time with time of lastDetectedMotion, which is either 1 or 0
@@ -67,12 +68,20 @@ export default class MqqtConnectionService {
               this.lastDetectedMotion.get("0"),
               time
             );
+            console.log(
+              "detect motion, motion set is:",
+              this.lastDetectedMotion
+            );
           } else {
             // last detected motion is 1
             // calculate time difference
             this.calculateTimeDifference(
               this.lastDetectedMotion.get("1"),
               time
+            );
+            console.log(
+              "detect motion, motion set is:",
+              this.lastDetectedMotion
             );
           }
         }
@@ -91,8 +100,13 @@ export default class MqqtConnectionService {
               this.lastDetectedMotion.get("0"),
               time
             );
+
             this.lastDetectedMotion.clear();
             this.lastDetectedMotion.set(motion, time);
+            console.log(
+              "detect motion, motion set is:",
+              this.lastDetectedMotion
+            );
             this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
           } else {
             // last detected motion is 1
@@ -102,6 +116,11 @@ export default class MqqtConnectionService {
               time
             );
             this.lastDetectedMotion.set(motion, time);
+            this.lastDetectedMotion.set("place", place);
+            console.log(
+              "detect motion, motion set is:",
+              this.lastDetectedMotion
+            );
             this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
           }
         }
@@ -182,7 +201,7 @@ export default class MqqtConnectionService {
   };
 
   onMessageArrived = message => {
-    console.log("Received message");
+    console.log("On message arrived - Received message");
     // one message, store one message
     this.message = message.payloadString;
     this.messageSubject.next(this.message);
@@ -196,6 +215,7 @@ export default class MqqtConnectionService {
     // console.log('onMessageArrived-message.payloadString',message.payloadString);
     // console.log('messageList length',this.messageList.length)
     // this.parseMessageList();
+    console.log("on message arrived - detectMotion ()");
     this.detectMotion();
   };
 
