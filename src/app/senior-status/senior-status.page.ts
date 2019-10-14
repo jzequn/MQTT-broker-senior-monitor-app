@@ -31,7 +31,6 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   private initiatedDate = new Date();
   private timeDifference = new Date();
   private timeDifferenceSubscription: Subscription;
-  private test = new Map();
 
   fetchTimeDifference() {
     // this.test.set("0", "10:13:13");
@@ -41,8 +40,6 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
     return initialTime === 0 ? "no motion" : this.timeDifference.getMinutes();
   }
 
-
-
   fetchImage() {
     let place = "";
     if (this.lastDetectMotion.size !== 0) {
@@ -50,6 +47,9 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
         return `../../assets/img/house.jfif`;
       } else {
         place = this.lastDetectMotion.get("place");
+        if (place === undefined) {
+          place = "house";
+        }
         return `../../assets/img/${place}.jfif`;
       }
     } else {
@@ -57,7 +57,23 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
     }
   }
 
+  // update the place string and charts
   fetchPlace() {
+    const livingData = this.fetchData("living");
+    const kitchenData = this.fetchData("kitchen");
+    const diningData = this.fetchData("dining");
+    const toiletData = this.fetchData("toilet");
+    const bedroomData = this.fetchData("bedroom");
+    const dataset = [
+      livingData,
+      kitchenData,
+      diningData,
+      toiletData,
+      bedroomData
+    ];
+    this.updateChart(this.barChart, dataset);
+    this.updateChart(this.doughnutChart, dataset);
+    this.updateChart(this.lineChart, dataset);
     return "In the lovely " + this.lastDetectMotion.get("place");
   }
 
@@ -82,6 +98,21 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
     }
   }
 
+  fetchData(place: string) {
+    if (this.lastDetectMotion.has(place)) {
+      return this.lastDetectMotion.get(place);
+    } else {
+      return 0;
+    }
+  }
+
+  updateChart(chart: Chart, dataset: any[]) {
+    chart.data.datasets[0].data.forEach((element, index) => {
+      chart.data.datasets[0].data[index] = dataset[index];
+    });
+    chart.update();
+  }
+
   ngOnInit() {
     this.messageListSubscription = this.mqtt
       .getMessageList()
@@ -89,6 +120,7 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
         if (list != null) {
           this.messageList = list;
         }
+        this.barChart.update();
       });
     this.lastDetectMotionSubscription = this.mqtt
       .getLastDetectedMotion()
@@ -110,22 +142,21 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
         datasets: [
           {
             label: "Frequency of occurence",
-            data: [12, 19, 3, 5, 2, 3],
+            data: [0, 0, 0, 0, 0],
+            // data: [65, 59, 81, 56, 55],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
               "rgba(255, 206, 86, 0.2)",
               "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
+              "rgba(153, 102, 255, 0.2)"
             ],
             borderColor: [
               "rgba(255,99,132,1)",
               "rgba(54, 162, 235, 1)",
               "rgba(255, 206, 86, 1)",
               "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)"
+              "rgba(153, 102, 255, 1)"
             ],
             borderWidth: 1
           }
@@ -151,21 +182,20 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
         datasets: [
           {
             label: "Frequency of occurence",
-            data: [12, 19, 3, 5, 2],
+            data: [0, 0, 0, 0, 0],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
               "rgba(255, 206, 86, 0.2)",
               "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-
+              "rgba(153, 102, 255, 0.2)"
             ],
             hoverBackgroundColor: [
               "#FF6384",
               "#36A2EB",
               "#FFCE56",
               "#FF6384",
-              "#36A2EB",
+              "#36A2EB"
             ]
           }
         ]
@@ -196,13 +226,14 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: [65, 59, 81, 56, 55],
+            data: [0, 0, 0, 0, 0],
             spanGaps: false
           }
         ]
       }
     });
   }
+
   ngOnDestroy() {
     this.messageListSubscription.unsubscribe();
     this.lastDetectMotionSubscription.unsubscribe();

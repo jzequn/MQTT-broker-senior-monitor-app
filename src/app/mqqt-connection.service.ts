@@ -22,6 +22,9 @@ export default class MqqtConnectionService {
   private timeDifference: Date;
   public lastDetectedMotionSubject = new Subject<any>();
   public timeDifferenceSubject = new Subject<any>();
+
+  private batteries = new Map();
+  private batteriesSubject = new Subject<any>();
   constructor() {}
 
   private tokenList: any[] = [];
@@ -128,6 +131,35 @@ export default class MqqtConnectionService {
     });
   }
 
+  calculateOccurenceOfPlace(message: string) {
+    const tokens = message.split(",", 5);
+    const motion = tokens[2];
+    const place = tokens[1];
+    if (motion === "1") {
+      // if motion detected, add it to lastDetectedMotion
+      if (this.lastDetectedMotion.has(place)) {
+        this.lastDetectedMotion.set(
+          place,
+          this.lastDetectedMotion.get(place) + 1
+        );
+      } else {
+        this.lastDetectedMotion.set(place, 1);
+      }
+    }
+  }
+
+  checkBatteries() {
+    const list = this.messageList.slice(Math.max(this.messageList.length, 0));
+    list.map(m => {
+      const tokens = m.split(",", 5);
+      const place = tokens[1];
+      const battery = tokens[3];
+
+      this.batteries.set(place, battery);
+    });
+    this.batteriesSubject.next(this.batteries);
+  }
+
   connect() {
     this.mqttStatus = "Connecting...";
     this.mqttStatusSubject.next(this.mqttStatus);
@@ -207,16 +239,14 @@ export default class MqqtConnectionService {
     this.messageSubject.next(this.message);
 
     // message list, push all the message to message list
-    // console.log('onMessageArrived-messageList');
 
     this.messageList.push(message.payloadString);
     this.messageListSubject.next(this.messageList);
-    // console.log('onMessageArrived-messagelist',this.messageList);
-    // console.log('onMessageArrived-message.payloadString',message.payloadString);
-    // console.log('messageList length',this.messageList.length)
-    // this.parseMessageList();
-    console.log("on message arrived - detectMotion ()");
+    // console.log("on message arrived - detectMotion ()");
     this.detectMotion();
+    console.log("on message arrived - calculateOccurenceOfPlace(message)");
+    this.calculateOccurenceOfPlace(message.payloadString);
+    this.checkBatteries();
   };
 
   // get one message
