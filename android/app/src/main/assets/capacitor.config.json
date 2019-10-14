@@ -1,0 +1,7 @@
+{
+  "appId": "com.mqttBroker.app",
+  "appName": "mqttBrokerApp",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

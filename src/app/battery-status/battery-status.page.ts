@@ -17,6 +17,7 @@ export class BatteryStatusPage implements OnInit, OnDestroy {
   @ViewChild("barCanvas", { static: true }) barCanvas: ElementRef;
   @ViewChild("doughnutCanvas", { static: true }) doughnutCanvas: ElementRef;
   @ViewChild("lineCanvas", { static: true }) lineCanvas: ElementRef;
+
   constructor(private mqtt: MQTTService) {}
 
   private barChart: Chart;
@@ -26,6 +27,7 @@ export class BatteryStatusPage implements OnInit, OnDestroy {
   private batteriesSubscription: Subscription;
   private batteries = new Map();
   private dataset = [0, 0, 0, 0, 0];
+  
 
   updateChart(chart: Chart, dataset: any[]) {
     chart.data.datasets[0].data.forEach((element, index) => {
