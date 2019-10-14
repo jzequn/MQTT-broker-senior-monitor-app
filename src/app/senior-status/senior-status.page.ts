@@ -36,10 +36,12 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   private timeDifference = new Date();
   private timeDifferenceSubscription: Subscription;
 
+  // this will calculate the time difference and push notification if needed
   fetchTimeDifference() {
     const initialTime = +this.initiatedDate - +this.timeDifference;
+    //push notification here
     if (initialTime !== 0) {
-      if (this.timeDifference.getMinutes >= 5) {
+      if (this.timeDifference.getMinutes() >= 5) {
         this.localNotifications.schedule({
           id: 1,
           text: "No motion detected for 5 mins",
