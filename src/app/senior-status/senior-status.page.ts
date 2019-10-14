@@ -8,6 +8,7 @@ import {
 import { Subscription } from "rxjs";
 import MqqtConnectionService from "../mqqt-connection.service";
 import { Chart } from "chart.js";
+import { LocalNotifications } from "@ionic-native/local-notifications/ngx";
 @Component({
   selector: "app-senior-status",
   templateUrl: "./senior-status.page.html",
@@ -21,7 +22,10 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   private barChart: Chart;
   private doughnutChart: Chart;
   private lineChart: Chart;
-  constructor(private mqtt: MqqtConnectionService) {}
+  constructor(
+    private mqtt: MqqtConnectionService,
+    private localNotifications: LocalNotifications
+  ) {}
 
   private messageList: any[] = [];
   private messageListSubscription: Subscription;
@@ -34,7 +38,16 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
 
   fetchTimeDifference() {
     const initialTime = +this.initiatedDate - +this.timeDifference;
-
+    if (initialTime !== 0) {
+      if (this.timeDifference.getMinutes >= 5) {
+        this.localNotifications.schedule({
+          id: 1,
+          text: "No motion detected for 5 mins",
+          sound: null,
+          data: { secret: "key_data" }
+        });
+      }
+    }
     return initialTime === 0 ? "no motion" : this.timeDifference.getMinutes();
   }
 

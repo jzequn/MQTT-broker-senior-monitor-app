@@ -21,10 +21,6 @@ const routes: Routes = [
         loadChildren: ()=>import('../senior-status/senior-status.module').then(m=>m.SeniorStatusPageModule)
       },
       {
-        path: 'notification',
-        loadChildren: ()=>import('../notification/notification.module').then(m=>m.NotificationPageModule)
-      },
-      {
         path: 'mqtt-broker',
         loadChildren: ()=>import('../mqtt-broker/mqtt-broker.module').then(m=>m.MqttBrokerPageModule)
       }
