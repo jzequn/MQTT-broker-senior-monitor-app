@@ -33,8 +33,6 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   private timeDifferenceSubscription: Subscription;
 
   fetchTimeDifference() {
-    // this.test.set("0", "10:13:13");
-    // return this.test.has('0') ? this.test.get('0'):'no 0 key found!';
     const initialTime = +this.initiatedDate - +this.timeDifference;
 
     return initialTime === 0 ? "no motion" : this.timeDifference.getMinutes();
@@ -114,6 +112,7 @@ export class SeniorStatusPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.mqtt.connect();
     this.messageListSubscription = this.mqtt
       .getMessageList()
       .subscribe(list => {

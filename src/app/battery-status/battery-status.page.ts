@@ -27,7 +27,6 @@ export class BatteryStatusPage implements OnInit, OnDestroy {
   private batteriesSubscription: Subscription;
   private batteries = new Map();
   private dataset = [0, 0, 0, 0, 0];
-  
 
   updateChart(chart: Chart, dataset: any[]) {
     chart.data.datasets[0].data.forEach((element, index) => {
@@ -41,6 +40,7 @@ export class BatteryStatusPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     this.batteriesSubscription = this.mqtt.getBatteries().subscribe(b => {
       console.log("subscribe to batteries");
       if (b.size !== 0) {
@@ -49,13 +49,11 @@ export class BatteryStatusPage implements OnInit, OnDestroy {
         this.dataset[2] = b.get("dining");
         this.dataset[3] = b.get("toilet");
         this.dataset[4] = b.get("bedroom");
-        console.log(this.dataset);
+
         this.updateChart(this.barChart, this.dataset);
         this.updateChart(this.doughnutChart, this.dataset);
         this.updateChart(this.lineChart, this.dataset);
-      } else {
-        console.log("b.size", b.size);
-      }
+      } 
     });
 
     this.barChart = new Chart(this.barCanvas.nativeElement, {
