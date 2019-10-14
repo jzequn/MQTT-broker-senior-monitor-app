@@ -1,47 +1,82 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Subscription } from "rxjs";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  OnDestroy
+} from "@angular/core";
 import { Chart } from "chart.js";
+import MQTTService from "../mqqt-connection.service";
 @Component({
   selector: "app-battery-status",
   templateUrl: "./battery-status.page.html",
   styleUrls: ["./battery-status.page.scss"]
 })
-export class BatteryStatusPage implements OnInit {
+export class BatteryStatusPage implements OnInit, OnDestroy {
   @ViewChild("barCanvas", { static: true }) barCanvas: ElementRef;
   @ViewChild("doughnutCanvas", { static: true }) doughnutCanvas: ElementRef;
   @ViewChild("lineCanvas", { static: true }) lineCanvas: ElementRef;
-  constructor() {}
+  constructor(private mqtt: MQTTService) {}
 
   private barChart: Chart;
   private doughnutChart: Chart;
   private lineChart: Chart;
 
+  private batteriesSubscription: Subscription;
+  private batteries = new Map();
+  private dataset = [0, 0, 0, 0, 0];
 
+  updateChart(chart: Chart, dataset: any[]) {
+    chart.data.datasets[0].data.forEach((element, index) => {
+      chart.data.datasets[0].data[index] = dataset[index];
+    });
+    chart.update();
+  }
 
+  ngOnDestroy() {
+    this.batteriesSubscription.unsubscribe();
+  }
 
   ngOnInit() {
+    this.batteriesSubscription = this.mqtt.getBatteries().subscribe(b => {
+      console.log("subscribe to batteries");
+      if (b.size !== 0) {
+        this.dataset[0] = b.get("living");
+        this.dataset[1] = b.get("kitchen");
+        this.dataset[2] = b.get("dining");
+        this.dataset[3] = b.get("toilet");
+        this.dataset[4] = b.get("bedroom");
+        console.log(this.dataset);
+        this.updateChart(this.barChart, this.dataset);
+        this.updateChart(this.doughnutChart, this.dataset);
+        this.updateChart(this.lineChart, this.dataset);
+      } else {
+        console.log("b.size", b.size);
+      }
+    });
+
     this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: "bar",
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ["Living", "Kitchen", "Dining", "Toilet", "Bedroom"],
         datasets: [
           {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
+            label: "Battery levels",
+            data: [0, 0, 0, 0, 0],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
               "rgba(255, 206, 86, 0.2)",
               "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
+              "rgba(153, 102, 255, 0.2)"
             ],
             borderColor: [
               "rgba(255,99,132,1)",
               "rgba(54, 162, 235, 1)",
               "rgba(255, 206, 86, 1)",
               "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)"
+              "rgba(153, 102, 255, 1)"
             ],
             borderWidth: 1
           }
@@ -63,26 +98,24 @@ export class BatteryStatusPage implements OnInit {
     this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
       type: "doughnut",
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ["Living", "Kitchen", "Dining", "Toilet", "Bedroom"],
         datasets: [
           {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
+            label: "Battery levels",
+            data: [0, 0, 0, 0, 0],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
               "rgba(255, 206, 86, 0.2)",
               "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
+              "rgba(153, 102, 255, 0.2)"
             ],
             hoverBackgroundColor: [
               "#FF6384",
               "#36A2EB",
               "#FFCE56",
               "#FF6384",
-              "#36A2EB",
-              "#FFCE56"
+              "#36A2EB"
             ]
           }
         ]
@@ -92,18 +125,10 @@ export class BatteryStatusPage implements OnInit {
     this.lineChart = new Chart(this.lineCanvas.nativeElement, {
       type: "line",
       data: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July"
-        ],
+        labels: ["Living", "Kitchen", "Dining", "Toilet", "Bedroom"],
         datasets: [
           {
-            label: "My First dataset",
+            label: "Battery levels",
             fill: false,
             lineTension: 0.1,
             backgroundColor: "rgba(75,192,192,0.4)",
@@ -121,7 +146,7 @@ export class BatteryStatusPage implements OnInit {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: [65, 59, 80, 81, 56, 55, 40],
+            data: [0, 0, 0, 0, 0],
             spanGaps: false
           }
         ]

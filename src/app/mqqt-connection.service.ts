@@ -44,7 +44,7 @@ export default class MqqtConnectionService {
     const previous = new Date(Date.parse(previousMotionTime));
     const current = new Date(Date.parse(currentMotionTime));
     const difference = new Date(Number(+current - +previous)); // use this date to get the time difference with format hh:mm:ss
-    console.log("difference - calculate differece", difference);
+    // console.log("difference - calculate differece", difference);
     this.timeDifference = difference;
     this.timeDifferenceSubject.next(this.timeDifference);
   }
@@ -71,10 +71,10 @@ export default class MqqtConnectionService {
               this.lastDetectedMotion.get("0"),
               time
             );
-            console.log(
-              "detect motion, motion set is:",
-              this.lastDetectedMotion
-            );
+            // console.log(
+            //   "detect motion, motion set is:",
+            //   this.lastDetectedMotion
+            // );
           } else {
             // last detected motion is 1
             // calculate time difference
@@ -82,10 +82,10 @@ export default class MqqtConnectionService {
               this.lastDetectedMotion.get("1"),
               time
             );
-            console.log(
-              "detect motion, motion set is:",
-              this.lastDetectedMotion
-            );
+            // console.log(
+            //   "detect motion, motion set is:",
+            //   this.lastDetectedMotion
+            // );
           }
         }
       } else {
@@ -106,10 +106,10 @@ export default class MqqtConnectionService {
 
             this.lastDetectedMotion.clear();
             this.lastDetectedMotion.set(motion, time);
-            console.log(
-              "detect motion, motion set is:",
-              this.lastDetectedMotion
-            );
+            // console.log(
+            //   "detect motion, motion set is:",
+            //   this.lastDetectedMotion
+            // );
             this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
           } else {
             // last detected motion is 1
@@ -120,10 +120,10 @@ export default class MqqtConnectionService {
             );
             this.lastDetectedMotion.set(motion, time);
             this.lastDetectedMotion.set("place", place);
-            console.log(
-              "detect motion, motion set is:",
-              this.lastDetectedMotion
-            );
+            // console.log(
+            //   "detect motion, motion set is:",
+            //   this.lastDetectedMotion
+            // );
             this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
           }
         }
@@ -149,13 +149,15 @@ export default class MqqtConnectionService {
   }
 
   checkBatteries() {
-    const list = this.messageList.slice(Math.max(this.messageList.length, 0));
+    const list = this.messageList.slice(Math.max(this.messageList.length-5, 0));
+    console.log("checkbatteries mqtt, list", list);
     list.map(m => {
       const tokens = m.split(",", 5);
       const place = tokens[1];
       const battery = tokens[3];
 
       this.batteries.set(place, battery);
+      console.log("batteries", this.batteries);
     });
     this.batteriesSubject.next(this.batteries);
   }
@@ -269,5 +271,8 @@ export default class MqqtConnectionService {
   }
   getTimeDifference() {
     return this.timeDifferenceSubject.asObservable();
+  }
+  getBatteries() {
+    return this.batteriesSubject.asObservable();
   }
 }
