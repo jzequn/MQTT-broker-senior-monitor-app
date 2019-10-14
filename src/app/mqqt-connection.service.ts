@@ -18,7 +18,6 @@ export default class MqqtConnectionService {
   private clientId = "342323cwwerwe3"; // this string must be unique to every client
 
   private lastDetectedMotion = new Map(); // motion is either 1 or 0
-  // private timeDifference = new Date();
   private timeDifference: Date;
   public lastDetectedMotionSubject = new Subject<any>();
   public timeDifferenceSubject = new Subject<any>();
@@ -43,8 +42,7 @@ export default class MqqtConnectionService {
   ) {
     const previous = new Date(Date.parse(previousMotionTime));
     const current = new Date(Date.parse(currentMotionTime));
-    const difference = new Date(Number(+current - +previous)); // use this date to get the time difference with format hh:mm:ss
-    // console.log("difference - calculate differece", difference);
+    const difference = new Date(Number(+current - +previous)); 
     this.timeDifference = difference;
     this.timeDifferenceSubject.next(this.timeDifference);
   }
@@ -71,10 +69,6 @@ export default class MqqtConnectionService {
               this.lastDetectedMotion.get("0"),
               time
             );
-            // console.log(
-            //   "detect motion, motion set is:",
-            //   this.lastDetectedMotion
-            // );
           } else {
             // last detected motion is 1
             // calculate time difference
@@ -82,10 +76,6 @@ export default class MqqtConnectionService {
               this.lastDetectedMotion.get("1"),
               time
             );
-            // console.log(
-            //   "detect motion, motion set is:",
-            //   this.lastDetectedMotion
-            // );
           }
         }
       } else {
@@ -106,10 +96,6 @@ export default class MqqtConnectionService {
 
             this.lastDetectedMotion.clear();
             this.lastDetectedMotion.set(motion, time);
-            // console.log(
-            //   "detect motion, motion set is:",
-            //   this.lastDetectedMotion
-            // );
             this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
           } else {
             // last detected motion is 1
@@ -120,10 +106,6 @@ export default class MqqtConnectionService {
             );
             this.lastDetectedMotion.set(motion, time);
             this.lastDetectedMotion.set("place", place);
-            // console.log(
-            //   "detect motion, motion set is:",
-            //   this.lastDetectedMotion
-            // );
             this.lastDetectedMotionSubject.next(this.lastDetectedMotion);
           }
         }
@@ -166,8 +148,8 @@ export default class MqqtConnectionService {
     this.mqttStatus = "Connecting...";
     this.mqttStatusSubject.next(this.mqttStatus);
     this.mqttClient = new Paho.Client(
-      // 'barretts.ecs.vuw.ac.nz',
-      "localhost",
+      'barretts.ecs.vuw.ac.nz',
+      // "localhost",
       8883,
       "/mqtt",
       this.clientId
